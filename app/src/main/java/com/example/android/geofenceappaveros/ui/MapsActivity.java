@@ -23,7 +23,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -85,7 +84,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             alert.setView(input);
             alert.setPositiveButton(R.string.text_set, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    Circle circle = mMap.addCircle(new CircleOptions()
+
+                    mMap.addCircle(new CircleOptions()
                             .center(latLng)
                             .radius(Double.parseDouble(input.getText().toString()))
                             .strokeColor(Color.RED)
