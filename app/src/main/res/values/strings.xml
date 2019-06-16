@@ -6,4 +6,5 @@
     <string name="text_radius">Enter Radious</string>
     <string name="text_set">Set</string>
     <string name="text_cancel">Cancel</string>
+    <string name="channel_name">GeofenceAppAveros</string>
 </resources>

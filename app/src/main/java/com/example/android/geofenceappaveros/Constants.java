@@ -8,5 +8,5 @@ public class Constants {
     public static final String GEOFENCE_APP_AVEROS_PREFERENCES= "averosPreferences";
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
-    public static final String RADIOUS = "longitude";
+    public static final String RADIUS = "longitude";
 }

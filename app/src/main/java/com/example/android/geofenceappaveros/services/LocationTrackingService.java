@@ -5,6 +5,8 @@ package com.example.android.geofenceappaveros.services;
  */
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,14 +14,22 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.android.geofenceappaveros.Constants;
+import com.example.android.geofenceappaveros.R;
+import com.example.android.geofenceappaveros.prefs.GeofenceAppAverosPreference;
+
 public class LocationTrackingService extends Service implements LocationListener {
 
+    private final String TAG = LocationTrackingService.this.getClass().getName();
     private final Context mContext;
 
     // flag for GPS status
@@ -174,8 +184,68 @@ public class LocationTrackingService extends Service implements LocationListener
     @Override
     public void onLocationChanged(Location location) {
 
+        Log.i(TAG, "onLocationChanged " + "called with " + location.getLatitude()
+         + " " + location.getLongitude());
+
+        GeofenceAppAverosPreference geofenceAppAverosPreference =
+                new GeofenceAppAverosPreference(LocationTrackingService.this);
+
+        Location initialLocation = new Location("initialLocation");
+        initialLocation.setLatitude(Double.parseDouble(
+                geofenceAppAverosPreference.getString(Constants.LATITUDE)));
+        initialLocation.setLongitude(Double.parseDouble(
+                geofenceAppAverosPreference.getString(Constants.LONGITUDE)));
+
+        double distance = initialLocation.distanceTo(location);
+        double radius = Double.parseDouble(geofenceAppAverosPreference.getString(Constants.RADIUS));
+
+        if (distance > radius) {
+            sendNotification("You are out of fence!");
+        } else {
+            sendNotification("You are in fence!");
+        }
+
     }
 
+    public void sendNotification(String notificationText) {
+
+        NotificationCompat.Builder builder;
+        NotificationCompat.Builder builderOreo = null;
+        NotificationManager notificationManager;
+        NotificationManagerCompat notificationManagers = null;
+
+        Log.i("AlarmReceiver", "notified!");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int notifyID = 1;
+            String CHANNEL_ID = "my_channel_01";// The id of the channel.
+            CharSequence name = getString(R.string.channel_name);// The user-visible name of the channel.
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            notificationManagers = NotificationManagerCompat.from(this);
+            builderOreo = new NotificationCompat.Builder(this, "96");
+        }
+
+        builder = new NotificationCompat.Builder(this);
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builderOreo.setContentTitle("GeofenceAppAveros")
+                    .setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentText(notificationText)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true);
+            notificationManagers.notify(1, builderOreo.build());
+        } else {
+
+            builder.setSmallIcon(R.mipmap.ic_launcher_round)
+                    .setContentTitle("GeofenceAppAveros")
+                    .setContentText(notificationText)
+                    .setAutoCancel(true);
+            notificationManager.notify(1, builder.build());
+
+        }
+    }
     @Override
     public void onProviderDisabled(String provider) {
     }

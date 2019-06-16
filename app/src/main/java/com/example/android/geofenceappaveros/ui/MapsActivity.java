@@ -96,7 +96,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     geofenceAppAverosPreference.putString(Constants.LATITUDE, String.valueOf(latLng.latitude));
                     geofenceAppAverosPreference.putString(Constants.LONGITUDE, String.valueOf(latLng.longitude));
-                    geofenceAppAverosPreference.putLong(Constants.RADIOUS, Long.valueOf(input.getText().toString()));
+                    geofenceAppAverosPreference.putString(Constants.RADIUS, String.valueOf(input.getText().toString()));
 
                     startService(new Intent(MapsActivity.this, LocationTrackingService.class));
 
