@@ -15,16 +15,20 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
-import com.example.android.geofenceappaveros.Constants;
+import com.example.android.geofenceappaveros.data.Constants;
 import com.example.android.geofenceappaveros.R;
 import com.example.android.geofenceappaveros.prefs.GeofenceAppAverosPreference;
 
+/**
+ * Author: Arsalan Siddiq
+ * Service: GeofenceAppAverosLocationListener
+ */
 public class GeofenceAppAverosLocationListener extends Service {
 
     private final String TAG = GeofenceAppAverosLocationListener.this.getClass().getName();
 
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 0;
+    private static final int LOCATION_INTERVAL = 1000 * 30 * 1;
     private static final float LOCATION_DISTANCE = 0;
     NotificationCompat.Builder builder;
     NotificationCompat.Builder builderOreo;
@@ -43,22 +47,30 @@ public class GeofenceAppAverosLocationListener extends Service {
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
 
+            //User preference instance
             GeofenceAppAverosPreference geofenceAppAverosPreference =
                     new GeofenceAppAverosPreference(GeofenceAppAverosLocationListener.this);
 
-            Location initialLocation = new Location(LocationManager.NETWORK_PROVIDER);
+            //location instance to get comparable coordinates with initial user selected location coords
+            Location initialLocation = new Location(LocationManager.PASSIVE_PROVIDER);
+
+            //update user preference with updated coordinates
             initialLocation.setLatitude(Double.parseDouble(
                     geofenceAppAverosPreference.getString(Constants.LATITUDE)));
             initialLocation.setLongitude(Double.parseDouble(
                     geofenceAppAverosPreference.getString(Constants.LONGITUDE)));
 
+            //distanceTo method will get actual distance b/w two coords
             double distance = initialLocation.distanceTo(location);
+
+            //getting user entered radius
             double radius = Double.parseDouble(geofenceAppAverosPreference.getString(Constants.RADIUS));
 
+            //logic to check weather user is in radius or not
             if (distance > radius) {
                 sendNotification("You are out of fence!");
             } else {
-                sendNotification("You are in fence!");
+                sendNotification("You have entered in fence!");
             }
         }
 
@@ -101,19 +113,21 @@ public class GeofenceAppAverosLocationListener extends Service {
 
         initializeLocationManager();
 
+        // Create the Notification, but only on API 26+ because
+        //this notification is required for background service, althoug we have other options too
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
            makeStatusNotification("Service Running",this);
-            final Notification n = builderOreo.setLocalOnly(true)
+            final Notification notification = builderOreo.setLocalOnly(true)
                     .setVisibility(Notification.VISIBILITY_PRIVATE)
                     .setCategory(Notification.CATEGORY_SERVICE)
                     .setPriority(NotificationCompat.PRIORITY_MIN)
                     .build();
-            startForeground(3, n);
+            startForeground(3, notification);
         }
 
         try {
             mLocationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER,
+                    LocationManager.PASSIVE_PROVIDER,
                     LOCATION_INTERVAL,
                     LOCATION_DISTANCE,
                     mLocationListeners[0]
@@ -121,30 +135,14 @@ public class GeofenceAppAverosLocationListener extends Service {
         } catch (java.lang.SecurityException ex) {
             Log.i(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "network provider does not exist, " + ex.getMessage());
+            Log.d(TAG, "passive provider does not exist, " + ex.getMessage());
         }
-
-
-        /*try {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    LOCATION_INTERVAL,
-                    LOCATION_DISTANCE,
-                    mLocationListeners[1]
-            );
-        } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
-        } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "gps provider does not exist " + ex.getMessage());
-        }*/
     }
 
     public void makeStatusNotification(String message, Context context) {
 
-        // Make a channel if necessary
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create the NotificationChannel, but only on API 26+ because
-            // the NotificationChannel class is new and not in the support library
+            // Creating the NotificationChannel, but only on API 26+ because
             CharSequence name = Constants.WORK_MANAGER;
             String description = Constants.CHANNEL_DESCRIPTION;
             int importance = NotificationManager.IMPORTANCE_HIGH;
@@ -175,29 +173,25 @@ public class GeofenceAppAverosLocationListener extends Service {
 
     public void sendNotification(String notificationText) {
 
-
         Log.i("AlarmReceiver", "notified!");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            makeStatusNotification(notificationText,this);
-
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            makeStatusNotification(notificationText,this);
+//        }
 
         builder = new NotificationCompat.Builder(this);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
+        //notificaiton to notify user about crossing or entering in the fence
+        //logic to support 26+ and below API levels
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             makeStatusNotification(notificationText, this);
         } else {
-
             builder.setSmallIcon(R.mipmap.ic_launcher_round)
                     .setContentTitle("GeofenceAppAveros")
                     .setContentText(notificationText)
                     .setAutoCancel(true);
             notificationManager.notify(97, builder.build());
-
-//        }
         }
     }
 
@@ -206,7 +200,7 @@ public class GeofenceAppAverosLocationListener extends Service {
         Log.e(TAG, "onDestroy");
         super.onDestroy();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            stopForeground(true); //true will remove notification
+            stopForeground(true);//true will remove notification
         }
     }
 
@@ -216,4 +210,5 @@ public class GeofenceAppAverosLocationListener extends Service {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
     }
+
 }

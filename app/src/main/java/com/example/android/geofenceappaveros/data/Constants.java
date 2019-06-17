@@ -1,7 +1,8 @@
-package com.example.android.geofenceappaveros;
+package com.example.android.geofenceappaveros.data;
 
 /**
- * Created by jellani on 6/16/2019.
+ * Author: Arsalan Siddiq
+ * Class: Constants
  */
 
 public class Constants {

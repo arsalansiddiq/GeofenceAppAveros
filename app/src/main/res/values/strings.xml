@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">GeofenceAppAveros</string>
-    <string name="title_activity_maps">Fence Activity</string>
+    <string name="title_activity_maps">Map Activity</string>
     <string name="title_activity_splash">Averos</string>
     <string name="mapbox_access_token">sk.eyJ1IjoicmFhemlhdCIsImEiOiJjand5emM3YW8wNWJ2NDNwb29wYW11NXZ3In0.87tMKuRmzne0t85M3No9xA</string>
-    <string name="text_radius">Enter Radious</string>
+    <string name="text_radius">Enter Radius</string>
     <string name="text_set">Set</string>
     <string name="text_cancel">Cancel</string>
     <string name="channel_name">GeofenceAppAveros</string>
     <string name="clear_map">Clear</string>
+    <string name="internet_error">No internet connection</string>
 </resources>
