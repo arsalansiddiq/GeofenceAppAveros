@@ -26,18 +26,9 @@ public class GeofenceAppAverosPreference {
         mSharedPreEditor.apply();
     }
 
-    public void putLong(String key, Long value) {
-        mSharedPreEditor.putLong(key, value);
-        mSharedPreEditor.apply();
-    }
-
     public void putBoolean(String key, boolean value) {
         mSharedPreEditor.putBoolean(key, value);
         mSharedPreEditor.apply();
-    }
-
-    public int getInt(String key) {
-        return  mSharedPreferences.getInt(key, 0);
     }
 
     public String getString(String key) {
