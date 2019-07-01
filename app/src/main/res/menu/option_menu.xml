@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/file"
         android:title="settings">
         <!-- "file" submenu -->
-        <menu>
-            <item android:id="@+id/create_new"
-                android:title="@string/clear_map" />
-        </menu>
+        <item android:id="@+id/create_new"
+            android:title="@string/clear_map"
+            android:icon="@android:drawable/ic_menu_delete"
+            android:visible="true"
+            app:showAsAction="collapseActionView|ifRoom"
+            />
     </item>
 </menu>

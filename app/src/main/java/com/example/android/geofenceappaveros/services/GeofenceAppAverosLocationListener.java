@@ -28,7 +28,7 @@ public class GeofenceAppAverosLocationListener extends Service {
     private final String TAG = GeofenceAppAverosLocationListener.this.getClass().getName();
 
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 1000 * 30 * 1;
+    private static final int LOCATION_INTERVAL = 0;
     private static final float LOCATION_DISTANCE = 0;
     NotificationCompat.Builder builder;
     NotificationCompat.Builder builderOreo;
@@ -54,23 +54,28 @@ public class GeofenceAppAverosLocationListener extends Service {
             //location instance to get comparable coordinates with initial user selected location coords
             Location initialLocation = new Location(LocationManager.PASSIVE_PROVIDER);
 
-            //update user preference with updated coordinates
-            initialLocation.setLatitude(Double.parseDouble(
-                    geofenceAppAverosPreference.getString(Constants.LATITUDE)));
-            initialLocation.setLongitude(Double.parseDouble(
-                    geofenceAppAverosPreference.getString(Constants.LONGITUDE)));
 
-            //distanceTo method will get actual distance b/w two coords
-            double distance = initialLocation.distanceTo(location);
+            if (geofenceAppAverosPreference.getBoolean(Constants.STATUS)) {
+                //update user preference with updated coordinates
+                initialLocation.setLatitude(Double.parseDouble(
+                        geofenceAppAverosPreference.getString(Constants.LATITUDE)));
+                initialLocation.setLongitude(Double.parseDouble(
+                        geofenceAppAverosPreference.getString(Constants.LONGITUDE)));
 
-            //getting user entered radius
-            double radius = Double.parseDouble(geofenceAppAverosPreference.getString(Constants.RADIUS));
+                //distanceTo method will get actual distance b/w two coords
+                double distance = initialLocation.distanceTo(location);
 
-            //logic to check weather user is in radius or not
-            if (distance > radius) {
-                sendNotification("You are out of fence!");
+                //getting user entered radius
+                double radius = Double.parseDouble(geofenceAppAverosPreference.getString(Constants.RADIUS));
+
+                //logic to check weather user is in radius or not
+                if (distance > radius) {
+                    sendNotification("You are out of fence!");
+                } else {
+                    sendNotification("You have entered in fence!");
+                }
             } else {
-                sendNotification("You have entered in fence!");
+                onDestroy();
             }
         }
 
@@ -127,7 +132,7 @@ public class GeofenceAppAverosLocationListener extends Service {
 
         try {
             mLocationManager.requestLocationUpdates(
-                    LocationManager.PASSIVE_PROVIDER,
+                    LocationManager.NETWORK_PROVIDER,
                     LOCATION_INTERVAL,
                     LOCATION_DISTANCE,
                     mLocationListeners[0]
@@ -197,10 +202,13 @@ public class GeofenceAppAverosLocationListener extends Service {
 
     @Override
     public void onDestroy() {
-        Log.e(TAG, "onDestroy");
+            Log.e(TAG, "onDestroy");
         super.onDestroy();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             stopForeground(true);//true will remove notification
+            stopSelf();
+        } else {
+            stopSelf();
         }
     }
 

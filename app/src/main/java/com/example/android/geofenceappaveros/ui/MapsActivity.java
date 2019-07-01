@@ -1,6 +1,7 @@
 package com.example.android.geofenceappaveros.ui;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,6 +9,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -18,6 +21,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -66,6 +70,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             new AlertDialog.Builder(this)
                     .setTitle(getResources().getString(R.string.app_name))
                     .setMessage(getResources().getString(R.string.internet_error))
+                    .setCancelable(false)
                     .setPositiveButton("OK", null).show();
         }
 
@@ -101,8 +106,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             setRadius();
 
         } else {
-            Toast.makeText(this, "long press to mark your location!", Toast.LENGTH_SHORT).show();
-            mMap.setOnMapLongClickListener(this);
+                Toast.makeText(this, "long press to mark your location!", Toast.LENGTH_SHORT).show();
+                mMap.setOnMapLongClickListener(this);
         }
     }
 
@@ -124,6 +129,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             input.setRawInputType(Configuration.KEYBOARD_12KEY);
             input.setPadding(60, 30, 0, 50);
             alert.setView(input);
+            alert.setCancelable(false);
             alert.setPositiveButton(R.string.text_set, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
 
@@ -198,7 +204,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case R.id.create_new:
                 mapClear_enableUserSelection();
                 stopService(new Intent(MapsActivity.this, GeofenceAppAverosLocationListener.class));
-                geofenceAppAverosPreference.putBoolean(Constants.STATUS , false);
+                geofenceAppAverosPreference.putBoolean(Constants.STATUS, false);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -219,6 +225,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     //Clear map and enable user selection in case of cancalaion of alterdialog and invalid input
     private void mapClear_enableUserSelection() {
         mMap.clear();
+        geofenceAppAverosPreference.clear();
         mMap.setOnMapLongClickListener(MapsActivity.this);
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+
+                moveTaskToBack(true);
+
+                return true;
+        }
+        return false;
+    }
+
 }
