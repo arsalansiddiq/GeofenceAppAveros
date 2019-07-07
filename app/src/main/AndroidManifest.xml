@@ -2,14 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.geofenceappaveros">
 
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
-    -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
@@ -32,12 +27,12 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".ui.MapsActivity"
+            android:name=".ui.maps.MapsActivity"
             android:label="@string/title_activity_maps"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.SplashActivity"
+        <activity android:name=".ui.splash.SplashActivity"
             android:theme="@style/AppThemeSplash"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -48,6 +43,7 @@
         </activity>
 
         <service android:name=".services.GeofenceAppAverosLocationListener"/>
+        <service android:name=".services.LocationClass"/>
     </application>
 
 </manifest>

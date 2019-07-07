@@ -9,4 +9,8 @@
     <string name="channel_name">GeofenceAppAveros</string>
     <string name="clear_map">Clear</string>
     <string name="internet_error">No internet connection</string>
+    <string name="string_radius_guide">long press to mark your location!</string>
+    <string name="string_radius_set">please enter radius</string>
+    <string name="string_permission_granted">granted!</string>
+    <string name="string_permission_notGranted">not granted!</string>
 </resources>

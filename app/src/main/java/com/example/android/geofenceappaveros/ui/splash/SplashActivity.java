@@ -1,4 +1,4 @@
-package com.example.android.geofenceappaveros.ui;
+package com.example.android.geofenceappaveros.ui.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,12 +6,13 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.android.geofenceappaveros.R;
+import com.example.android.geofenceappaveros.ui.maps.MapsActivity;
 
 /**
  * Author: Arsalan Siddiq
- * Activity: Splash
+ * Activity: This activity will hold user for 2 seconds and is extended with base activity
  */
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity implements View {
 
     private final int holdTime = 2000;
 
@@ -24,7 +25,7 @@ public class SplashActivity extends AppCompatActivity {
         init();
     }
 
-    private void init() {
+     public void init() {
         final Handler handler = new Handler();
         try {
             handler.postDelayed(new Runnable() {

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorSplashBackground"
-    tools:context="com.example.android.geofenceappaveros.ui.SplashActivity">
+    tools:context="com.example.android.geofenceappaveros.ui.splash.SplashActivity">
 
     <TextView
         android:id="@+id/textView"

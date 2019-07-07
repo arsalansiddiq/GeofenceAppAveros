@@ -7,41 +7,85 @@ import com.example.android.geofenceappaveros.data.Constants;
 
 /**
  * Author: Arsalan Siddiq
- * Class: Preference
+ * Class: Preference for data manipulation in App
  */
 
 public class GeofenceAppAverosPreference {
 
+    /*
+    *SharedPreference to save user settings in app database
+    *This reference variable will be using to perform CRUD in Preference
+     */
     private SharedPreferences mSharedPreferences;
-    private SharedPreferences.Editor mSharedPreEditor;
 
+    /**
+     *GeofenceAppAverosPreference Constructor to get instance of class
+     * @param context is required to intialize SharedPreference
+     */
     public GeofenceAppAverosPreference(Context context) {
-        mSharedPreferences = context.getSharedPreferences(Constants.GEOFENCE_APP_AVEROS_PREFERENCES,context.MODE_PRIVATE);
-        mSharedPreEditor = mSharedPreferences.edit();
+        //Assigning Sharepreference instance to reference varaible mSharedPreferences
+        mSharedPreferences = context.getSharedPreferences(Constants.GEOFENCE_APP_AVEROS_PREFERENCES, Context.MODE_PRIVATE);
     }
 
-    //generic string method to store strings
+    /**
+     * PutString method will store String values identified by a key to SharedPreference
+     * @param key
+     * @param value
+     */
     public void putString(String key, String value) {
-        mSharedPreEditor.putString(key, value);
-        mSharedPreEditor.apply();
+        /**
+         * edit() is required to perform CRUD in SharedPreferences
+         * PutString Actual Sharedpreference interface signature
+         * apply() will apply changes into Sharedpreferences
+         */
+        mSharedPreferences.edit().putString(key, value).apply();
     }
 
-    //generic boolean method to store strings
+    /**
+     * PutBoolean method will store Boolean values identified by a key to SharedPreference
+     * @param key
+     * @param value
+     */
     public void putBoolean(String key, boolean value) {
-        mSharedPreEditor.putBoolean(key, value);
-        mSharedPreEditor.apply();
+        /**
+         * edit() is required to perform CRUD in SharedPreferences
+         * PutBoolean Actual Sharedpreference interface signature
+         * apply() will apply changes into Sharedpreferences
+         */
+        mSharedPreferences.edit().putBoolean(key, value).apply();
     }
 
-    //generic string method to retrieve strings
+    /**
+     * getString custom method to retrieve data from sharedpreference
+     * @param key
+     * @return String value of particular key from sharedpreference
+     */
     public String getString(String key) {
+
+        //getString Actual Sharedpreference interface signature which will get String values of a key
         return  mSharedPreferences.getString(key, null);
     }
-    //generic boolean method to retrieve strings
+
+    /**
+     * getBoolean custom method to retrieve data from sharedpreference
+     * @param key
+     * @return Boolean of particular key from sharedpreference
+     */
     public Boolean getBoolean(String key) {
+
+        //getboolean Actual Sharedpreference interface signature which will retrieve boolean value of a key
         return  mSharedPreferences.getBoolean(key, false);
     }
 
+    /**
+     * clear() custom method to clear stored sharedpreference in app
+     */
     public void clear() {
-        mSharedPreEditor.clear().apply();
+        /**
+         * edit() is required to perform CRUD in SharedPreferences
+         * clear() Actual Sharedpreference interface signature which wiped out all stored sharedpreferences
+         * apply() will apply changes into Sharedpreferences
+         */
+        mSharedPreferences.edit().clear().apply();
     }
 }
